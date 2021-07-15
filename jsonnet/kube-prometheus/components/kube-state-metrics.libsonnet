@@ -11,7 +11,10 @@ local defaults = {
     requests: { cpu: '10m', memory: '190Mi' },
     limits: { cpu: '100m', memory: '250Mi' },
   },
-
+  kubeRbacProxyMainResources: {
+    limits+: { cpu: '40m' },
+    requests+: { cpu: '20m' },
+  },
   scrapeInterval: '30s',
   scrapeTimeout: '30s',
   commonLabels:: {
@@ -92,10 +95,7 @@ function(params) (import 'github.com/kubernetes/kube-state-metrics/jsonnet/kube-
     ports: [
       { name: 'https-main', containerPort: 8443 },
     ],
-    resources+: {
-      limits+: { cpu: '40m' },
-      requests+: { cpu: '20m' },
-    },
+    resources+: ksm._config.kubeRbacProxyMainResources,
     image: ksm._config.kubeRbacProxyImage,
   }),
 
